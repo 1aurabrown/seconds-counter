@@ -62,9 +62,9 @@ function drawPoint(time) {
   var milliseconds = time.milliseconds()
   var xTranslate = milliseconds * width/1000
   var ySpace = height / 60;
-  var yTranslate = seconds * ySpace
+  var yTranslate = (seconds * ySpace) + (ySpace)
 
-  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
+  ctx.fillStyle = `rgba(60, 60, 61, ${opacity})`
 
   ctx.save();
   ctx.beginPath();
