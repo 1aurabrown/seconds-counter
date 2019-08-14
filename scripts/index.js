@@ -60,7 +60,7 @@ function drawPoint(time) {
   console.log(time)
   var seconds = time.seconds()
   var milliseconds = time.milliseconds()
-  var xTranslate = milliseconds * width/1000
+  var xTranslate = milliseconds * (width-90)/1000
   var ySpace = height / 60;
   var yTranslate = (seconds * ySpace) + (ySpace)
 
