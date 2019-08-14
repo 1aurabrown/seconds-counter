@@ -1,12 +1,12 @@
 var ctx;
 var start = moment();
 var dpr;
-var radius = .2;
+var radius = 1;
 const twoPi = Math.PI * 2;
 var width;
 var height;
-var interval = 100;
-
+var interval = 1000;
+var times = []
 $(document).ready( function() {
   dpr = window.devicePixelRatio || 1;
   canvas = document.getElementById('canvas');
@@ -42,20 +42,34 @@ function resizeCanvas() {
 
 
 function draw() {
-  ctx.fillStyle = '#000000';
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 1;
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  var time = moment()
+  times.unshift(moment())
+  nPoints = 60 * (1000/interval)
+  arrayLength = nPoints * 2
+  times = times.slice (0, arrayLength)
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (i=0; i<times.length; i++) {
+    opacity = 1-(i / (arrayLength))
+    console.log(opacity)
+    drawPoint(times[i], opacity)
+  }
+}
+
+function drawPoint(time) {
+  console.log(time)
   var seconds = time.seconds()
   var milliseconds = time.milliseconds()
   var yTranslate = milliseconds * height/1000
   var xSpace = width / 60;
   var xTranslate = seconds * xSpace
+
+  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+
   ctx.save();
   ctx.translate(xTranslate, yTranslate);
   ctx.beginPath();
   ctx.arc(0, 0, radius, 0, twoPi);
-  ctx.stroke();
+  ctx.fill();
   ctx.restore();
 }
