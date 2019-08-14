@@ -60,16 +60,15 @@ function drawPoint(time) {
   console.log(time)
   var seconds = time.seconds()
   var milliseconds = time.milliseconds()
-  var yTranslate = milliseconds * height/1000
-  var xSpace = width / 60;
-  var xTranslate = seconds * xSpace
+  var xTranslate = milliseconds * width/1000
+  var ySpace = height / 60;
+  var yTranslate = seconds * ySpace
 
-  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
 
   ctx.save();
-  ctx.translate(xTranslate, yTranslate);
   ctx.beginPath();
-  ctx.arc(0, 0, radius, 0, twoPi);
-  ctx.fill();
+  ctx.font = "12px Arial";
+  ctx.fillText(time.format("HH:mm:ss:SSS"), xTranslate, yTranslate);
   ctx.restore();
 }
