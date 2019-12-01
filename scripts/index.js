@@ -8,7 +8,8 @@ var times = []
 const params = $.deparam(window.location.search.split('?')[1] || '')
 const fadeDuration = parseInt(params.fadeDuration) ? params.fadeDuration : 300; // in seconds
 const interval = parseInt(params.interval) ? params.interval : 100; // in ms
-const radius = parseInt(params.radius) ? params.radius : 1; // in px
+const diameter = parseInt(params.diameter) ? params.diameter : 1; // in px
+const radius = diameter / 2; // in px
 const reloadInterval = parseInt(params.reloadInterval) // in minutes, optionally refresh the page
 
 $(document).ready( function() {
@@ -66,9 +67,14 @@ function drawPoint(time, opacity) {
   var seconds = time.seconds()
   var milliseconds = time.milliseconds()
   var ySpace = height/1000
-  var yTranslate = (milliseconds * ySpace) + (ySpace / 2)
+  var y = (milliseconds * ySpace) + (ySpace / 2)
+  var y2 = Math.round(2 * y)
+  var yTranslate = y2/2 + ((y2 % 2 ) == (diameter % 2) ? 0 : .5);
+
   var xSpace = width / 60;
-  var xTranslate = (seconds * xSpace) + (xSpace / 2)
+  var x = (seconds * xSpace) + (xSpace / 2)
+  var x2 = Math.round(2 * x)
+  var xTranslate = x2/2 + ((x2 % 2) == (diameter % 2) ? 0 : .5);
 
   ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
 
