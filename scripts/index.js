@@ -1,11 +1,15 @@
 var ctx;
-var start = moment();
+const start = moment();
 var dpr;
-var radius = .2;
 const twoPi = Math.PI * 2;
 var width;
 var height;
-var interval = 100;
+var times = []
+const params = $.deparam(window.location.search.split('?')[1] || '')
+const fadeDuration = parseInt(params.fadeDuration) ? params.fadeDuration : 300; // in seconds
+const interval = parseInt(params.interval) ? params.interval : 100; // in ms
+const radius = parseInt(params.radius) ? params.radius : 1; // in px
+const reloadInterval = parseInt(params.reloadInterval) // in minutes, optionally refresh the page
 
 $(document).ready( function() {
   dpr = window.devicePixelRatio || 1;
@@ -21,7 +25,11 @@ $(document).ready( function() {
   window.setInterval(function() {
     window.requestAnimationFrame(draw);
   }, interval)
-
+  if (reloadInterval && reloadInterval > 0) {
+    window.setInterval(function() {
+      location.reload()
+    }, reloadInterval * 1000)
+  }
 });
 
 function resizeCanvas() {
@@ -42,20 +50,32 @@ function resizeCanvas() {
 
 
 function draw() {
-  ctx.fillStyle = '#000000';
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 1;
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  var time = moment()
+  times.unshift(moment())
+  nPoints = fadeDuration * (1000/interval)
+  times = times.slice (0, nPoints)
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (i=0; i<times.length; i++) {
+    opacity = 1-(i / (nPoints))
+    drawPoint(times[i], opacity)
+  }
+}
+
+function drawPoint(time, opacity) {
   var seconds = time.seconds()
   var milliseconds = time.milliseconds()
-  var yTranslate = milliseconds * height/1000
+  var ySpace = height/1000
+  var yTranslate = (milliseconds * ySpace) + (ySpace / 2)
   var xSpace = width / 60;
-  var xTranslate = seconds * xSpace
+  var xTranslate = (seconds * xSpace) + (xSpace / 2)
+
+  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+
   ctx.save();
   ctx.translate(xTranslate, yTranslate);
   ctx.beginPath();
   ctx.arc(0, 0, radius, 0, twoPi);
-  ctx.stroke();
+  ctx.fill();
   ctx.restore();
 }
