@@ -1,16 +1,14 @@
 var ctx;
-const start = moment();
 var dpr;
 const twoPi = Math.PI * 2;
 var width;
 var height;
-var times = []
-const params = $.deparam(window.location.search.split('?')[1] || '')
-const fadeDuration = parseInt(params.fadeDuration) ? params.fadeDuration : 300; // in seconds
-const interval = parseInt(params.interval) ? params.interval : 100; // in ms
-const diameter = parseInt(params.diameter) ? params.diameter : 1; // in px
+var times = [];
+var canvas;
+const fadeDuration = 300; // in seconds
+const interval = 100; // in ms
+const diameter = 1; // in px
 const radius = diameter / 2; // in px
-const reloadInterval = parseInt(params.reloadInterval) // in minutes, optionally refresh the page
 
 $(document).ready( function() {
   dpr = window.devicePixelRatio || 1;
@@ -26,11 +24,6 @@ $(document).ready( function() {
   window.setInterval(function() {
     window.requestAnimationFrame(draw);
   }, interval)
-  if (reloadInterval && reloadInterval > 0) {
-    window.setInterval(function() {
-      location.reload()
-    }, reloadInterval * 1000)
-  }
 });
 
 function resizeCanvas() {
@@ -51,30 +44,30 @@ function resizeCanvas() {
 
 
 function draw() {
-  times.unshift(moment())
-  nPoints = fadeDuration * (1000/interval)
-  times = times.slice (0, nPoints)
+  times.unshift(moment());
+  var nPoints = fadeDuration * (1000/interval);
+  times = times.slice (0, nPoints);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  for (i=0; i<times.length; i++) {
-    opacity = 1-(i / (nPoints))
-    drawPoint(times[i], opacity)
+  for (let i=0; i<times.length; i++) {
+    let opacity = 1-(i / (nPoints));
+    drawPoint(times[i], opacity);
   }
 }
 
 function drawPoint(time, opacity) {
-  var seconds = time.seconds()
-  var milliseconds = time.milliseconds()
-  var ySpace = height/1000
-  var y = (milliseconds * ySpace) + (ySpace / 2)
-  var y2 = Math.round(2 * y)
-  var yTranslate = y2/2 + ((y2 % 2 ) == (diameter % 2) ? 0 : .5);
+  var seconds = time.seconds();
+  var milliseconds = time.milliseconds();
+  var ySpace = height/1000;
+  var y = (milliseconds * ySpace) + (ySpace / 2);
+  var y2 = Math.round(2 * y);
+  var yTranslate = y2/2 + ((y2 % 2 ) == (diameter % 2) ? 0 : 0.5);
 
   var xSpace = width / 60;
-  var x = (seconds * xSpace) + (xSpace / 2)
-  var x2 = Math.round(2 * x)
-  var xTranslate = x2/2 + ((x2 % 2) == (diameter % 2) ? 0 : .5);
+  var x = (seconds * xSpace) + (xSpace / 2);
+  var x2 = Math.round(2 * x);
+  var xTranslate = x2/2 + ((x2 % 2) == (diameter % 2) ? 0 : 0.5);
 
   ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
 
